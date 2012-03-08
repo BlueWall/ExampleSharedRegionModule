@@ -1,0 +1,74 @@
+<?xml version="1.0" ?>
+<!--
+   ****[ NOTES ]**** 
+   Our dll name comes from the name="ExampleModule" here in the Project.
+   We make the path from our base directory to the directory our *cs files
+   are placed in. 
+-->
+<Project frameworkVersion="v3_5" name="ExampleModule" path="addon-modules/Example/Modules" type="Library">
+     <!-- ****[ NOTE ]****
+
+        Our configuration definitions.
+        When developing, testing and debugging we want the Debug
+        configuration, which is default.
+
+        When we have certified the application and are ready to deploy,
+        we want to build in the Release configuration ...
+
+	xbuild /p:Configuration=Release
+
+        nant build Release
+
+        An IDE will have methods to switch build modes. 
+
+     -->
+     <Configuration name="Debug">
+       <Options>
+         <!-- ****[ NOTE ]****
+            The path from our *.cs files to the place our dll will live
+         -->
+         <OutputPath>../../../bin/</OutputPath>
+       </Options>
+     </Configuration>
+     <Configuration name="Release">
+       <Options>
+         <OutputPath>../../../bin/</OutputPath>
+       </Options>
+     </Configuration>
+
+     <ReferencePath>../../../bin/</ReferencePath>
+     <Reference name="System"/>
+     <Reference name="System.Xml"/>
+     <Reference name="System.Web"/>
+     <Reference name="OpenMetaverse" path="../../../bin/"/>
+     <Reference name="OpenMetaverseTypes" path="../../../bin/"/>
+     <!-- ****[ NOTE ]****
+
+         When we a reference that is not one of our projects, 
+         it should look like the line below. Some build systems
+         will work with the old way, but not xbuild (the official
+         mono build system) or Monodevelop. So, if you want to 
+         distribute your module, or you are making one for core
+         please use the new format so it will not break modern
+         build systems.
+
+     -->
+     <Reference name="OpenMetaverse.StructuredData" path="../../../bin/"/>
+     <Reference name="OpenSim.Framework"/>
+     <Reference name="OpenSim.Framework.Communications"/>
+     <Reference name="OpenSim.Framework.Servers"/>
+     <Reference name="OpenSim.Framework.Servers.HttpServer"/>
+     <Reference name="OpenSim.Framework.Serialization"/>
+     <Reference name="OpenSim.Framework.Console"/>
+     <Reference name="OpenSim.Region.Framework"/>
+     <Reference name="OpenSim.Region.CoreModules" />
+     <Reference name="XMLRPC" path="../../../bin/"/>
+     <Reference name="Nini" path="../../../bin/"/>
+     <Reference name="log4net" path="../../../bin/"/>
+     <Reference name="Mono.Addins" path="../../../bin/"/>
+
+     <Files>
+       <Match pattern="*.cs" recurse="true">
+       </Match>
+     </Files>
+   </Project>
