@@ -21,6 +21,7 @@
 // After that, you can add your using reference here.
 // If you don't use those steps, then you will have errors when you update
 // your OpenSim code and run the prebuild script.
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -219,14 +220,17 @@ namespace ModExampleModule
                 scene.RegisterModuleInterface<IExampleModule>(this);
 
 
-                // The following are optional: This is part of the required components to create console commands
+                // The following are optional and is part of the required components to create
+                // console commands to be handled by our module
                 //
                 // Add a command to set the message in the console
+                // See the handler 'HandleSetMessage' below
                 Command set_message = new Command("set-message", CommandIntentions.COMMAND_NON_HAZARDOUS, HandleSetMessage, "Set ExampleModule message");
                 set_message.AddArgument("message", "the message", "String");
                 m_commander.RegisterCommand("set-message", set_message);
 
                 // Add a command to get the message in the console
+                // See the handler 'HandleGetMessage' below
                 Command get_message = new Command("get-message", CommandIntentions.COMMAND_NON_HAZARDOUS, HandleGetMessage, "Get ExampleModule message");
                 m_commander.RegisterCommand("get-message",get_message);
 
@@ -315,6 +319,7 @@ namespace ModExampleModule
             // note name "example"
             if (args[0] == "example")
             {
+                // Check if we want to set the welcome message
                 if (args[1] == "set-message")
                 {
                     string[] message = new string[args.Length - 2];
@@ -328,6 +333,7 @@ namespace ModExampleModule
                     return;
                 }
 
+                // We are wanting to check the welcome message
                 if (args[1] == "get-message")
                 {
                     string[] msg = new string[0];
