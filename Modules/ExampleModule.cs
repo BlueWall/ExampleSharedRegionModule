@@ -15,12 +15,17 @@
 
  */
 
+//
 // Keep your usings in sync with your code and with the prebuild.xml
 // Remove any unused references. Add new ones by placing the reference in
 // your prebuild.xml, then run the script to get your project.
 // After that, you can add your using reference here.
 // If you don't use those steps, then you will have errors when you update
 // your OpenSim code and run the prebuild script.
+//
+// If you need help with C# programming, look here: http://www.csharp-station.com/Tutorial.aspx
+//
+// 
 
 using System;
 using System.Collections.Generic;
