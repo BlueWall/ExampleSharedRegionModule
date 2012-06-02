@@ -44,7 +44,7 @@
      <Reference name="OpenMetaverseTypes" path="../../../bin/"/>
      <!-- ****[ NOTE ]****
 
-         When we a reference that is not one of our projects, 
+         When we a reference an assembly that is not one of our projects, 
          it should look like the line below. Some build systems
          will work with the old way, but not xbuild (the official
          mono build system) or Monodevelop. So, if you want to 
