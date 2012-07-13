@@ -315,7 +315,7 @@ namespace ModExampleModule
             // we use our m_ExampleConfig for the message - we can set that in the ini
             client.SendAgentAlertMessage(String.Format("Hello! {0}! {1}", GetClientName(client), m_ExampleMessage), true);
 
-            m_log.InfoFormat("[ExampleModule]: NewClient {0} @ {1}", client.Name, client.GetClientEP().ToString());
+            m_log.InfoFormat("[ExampleModule]: NewClient {0} @ {1}", client.Name, client.RemoteEndPoint.ToString());
         }
 
         // This is needed if we want to issue console commands
