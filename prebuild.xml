@@ -39,6 +39,9 @@
      <ReferencePath>../../../bin/</ReferencePath>
      <Reference name="System"/>
      <Reference name="System.Xml"/>
+     <!-- ****[ NOTE ]****
+     	This is a reference to an assembly in the system...
+     -->
      <Reference name="System.Web"/>
      <Reference name="OpenMetaverse" path="../../../bin/"/>
      <Reference name="OpenMetaverseTypes" path="../../../bin/"/>
@@ -54,6 +57,9 @@
 
      -->
      <Reference name="OpenMetaverse.StructuredData" path="../../../bin/"/>
+     <!-- ****[ NOTE ]****
+     	This is one of our internal projects that we build...
+     -->
      <Reference name="OpenSim.Framework"/>
      <Reference name="OpenSim.Framework.Communications"/>
      <Reference name="OpenSim.Framework.Servers"/>
