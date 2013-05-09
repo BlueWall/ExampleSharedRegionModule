@@ -5,7 +5,7 @@
    We make the path from our base directory to the directory our *cs files
    are placed in. 
 -->
-<Project frameworkVersion="v3_5" name="ExampleModule" path="addon-modules/Example/Modules" type="Library">
+<Project frameworkVersion="v3_5" name="ExampleModule" path="addon-modules/ExampleRegionModule/Src" type="Library">
      <!-- ****[ NOTE ]****
 
         Our configuration definitions.
@@ -15,9 +15,9 @@
         When we have certified the application and are ready to deploy,
         we want to build in the Release configuration ...
 
-	xbuild /p:Configuration=Release
-
-        nant build Release
+	          xbuild /p:Configuration=Release
+                  or
+            nant build Release
 
         An IDE will have methods to switch build modes. 
 
