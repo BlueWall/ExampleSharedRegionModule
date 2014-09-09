@@ -6,7 +6,7 @@ Example region module for OpenSimulator
 Clone this repo into your ./addon-modules directory and
 run the prebiuld script. The module needs an ini entry:
 
-https://github.com/BlueWall/ExampleRegionModule/blob/master/Src/ExampleModule.cs#L137
+https://github.com/BlueWall/ExampleSharedRegionModule/blob/master/Src/ExampleModule.cs#L145
 
 
 The example region module for OpenSimulator includes heavy comments to explain 
