@@ -62,6 +62,8 @@ namespace ModExampleModule
 
     }
 
+    // We need this for our module loader plugin. it uses mono-addins to locate
+    // and manage extensions througout OpenSimulator.
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule")]
     public class ExampleModule : IExampleModule, ISharedRegionModule, ICommandableModule
     {
@@ -111,6 +113,12 @@ namespace ModExampleModule
             // Return if not enabled
             if (!m_enabled)
                 return;
+
+            // We implement ISharedRegionModule, so we have access to every region in the instance
+            // When doing this, we must take extra care to select the region we want for operations.
+            foreach(Scene s in m_Scenes.Values)
+                m_log.InfoFormat("[ExampleModule]: Region: {0} PostInitialize",s.RegionInfo.RegionName);
+
         }
 
         #endregion
@@ -139,6 +147,22 @@ namespace ModExampleModule
             //   enabled = true
             //   ExampleMessage = "Welcome to the Metaverse!"
             //
+            // We set our m_enabled according to 
+            // the ini value of enabled because we
+            // need to make checks throughout the module.
+            // We need to test whether the module is enabled, then
+            // continue execution, or return immediately depending
+            // on the value.
+            //
+            // Note: all the logging provided in the example
+            // happens regardless of whether the module is enabled
+            // to show what is happening inside.
+            //
+            // In your production module, you will want to move
+            // the enabled test to the top of each method and 
+            // return as quickly as possible if the module is
+            // not enabled.
+            //
             IConfig cnf = source.Configs["ExampleModule"];
             
             if (cnf == null)
@@ -148,7 +172,8 @@ namespace ModExampleModule
                 return;
             }
 
-            // get our enabled state from the ini
+            // get our enabled state from the ini while supplying a default value of false
+            // in case there is no settings in the ini
             m_enabled = cnf.GetBoolean("enabled", false);
 
             if (m_enabled == false)
@@ -183,7 +208,8 @@ namespace ModExampleModule
         {
             // We just have this to show the sequence
             // remove from your real module
-            m_log.InfoFormat("[ExampleModule]: Running {0} Sequence {1} : Enabled {2}", "AddRegion", (m_InitCount++).ToString(), m_enabled.ToString());
+            m_log.InfoFormat("[ExampleModule]: Running {0} Sequence {1} : Enabled {2}", "AddRegion {3}",
+                             (m_InitCount++).ToString(), m_enabled.ToString(), scene.RegionInfo.RegionName);
 
             // We have to check to see if we're enabled
             // Return if not enabled
@@ -208,7 +234,11 @@ namespace ModExampleModule
 
                 // Hook up events
                 // This will fire when a client enters the region
+                // It will fire for all regions in the instance
+                // because this is a shared region module
                 scene.EventManager.OnNewClient += OnNewClient;
+                // This will fire when the agent becomes a root agent
+                scene.EventManager.OnMakeRootAgent += HandleOnMakeRootAgent;
                 // This will fire when we type our command into the console
                 scene.EventManager.OnPluginConsole += HandleSceneEventManagerOnPluginConsole;
 
@@ -247,7 +277,8 @@ namespace ModExampleModule
         public void RemoveRegion (Scene scene)
         {
             // We just have this to show the sequence
-            m_log.InfoFormat("[ExampleModule]: Running {0} Sequence {1} : Enabled {2}", "RemoveRegion", (m_InitCount++).ToString(), m_enabled.ToString());
+            m_log.InfoFormat("[ExampleModule]: Running {0} Sequence {1} : Enabled {2}", "RemoveRegion {3}", 
+                             (m_InitCount++).ToString(), m_enabled.ToString(), scene.RegionInfo.RegionName);
 
             // We have to check to see if we're enabled
             // Return if not enabled
@@ -256,6 +287,7 @@ namespace ModExampleModule
 
             // un-register our event handlers...
             scene.EventManager.OnNewClient -= OnNewClient;
+            scene.EventManager.OnMakeRootAgent -= HandleOnMakeRootAgent;
             scene.EventManager.OnPluginConsole -= HandleSceneEventManagerOnPluginConsole;
 
             // We can remove this Scene from out Dictionary - it may have others
@@ -271,9 +303,12 @@ namespace ModExampleModule
 
         public void RegionLoaded (Scene scene)
         {
-            // We just have this to show the sequence
+            // We just have this to show the sequence and whether the module is enabled
+            // See below: we must test to see if we are enabled and return immediately
+            // instead of continuing
             // Remove from your real module
-            m_log.InfoFormat("[ExampleModule]: Running {0} Sequence {1} : Enabled {2}", "RegionLoaded", (m_InitCount++).ToString(), m_enabled.ToString());
+            m_log.InfoFormat("[ExampleModule]: Running {0} Sequence {1} : Enabled {2}", "RegionLoaded {3}",
+                             (m_InitCount++).ToString(), m_enabled.ToString(), scene.RegionInfo.RegionName);
 
             // We have to check to see if we're enabled
             // Return if not enabled
@@ -287,6 +322,7 @@ namespace ModExampleModule
             {
                 // We just have this to show the sequence:
                 // Not a good practice to run code in a property so remove it when you make your modules
+                // You will see that this is called for each region that the instance loads
                 m_log.InfoFormat("[ExampleModule]: Running {0} Sequence {1} : Enabled {2}", "Name", (m_InitCount++).ToString(), m_enabled.ToString());
                 return m_name;
             }
@@ -311,11 +347,30 @@ namespace ModExampleModule
         #region Event Handlers
         void OnNewClient (OpenSim.Framework.IClientAPI client)
         {
+            // Just for fun - the new agent will not be a root agent
+            // They are placed in the region as a child, then upgraded
+            // See HandleOnMakeRootAgent below where we handle that event.
+            string agent_type = "Root";
+            if(client.SceneAgent.IsChildAgent)
+                agent_type = "Child";
+            
+            // Use our convenience method below to get the client name, then send them a modal alert message
+            // we use our m_ExampleConfig for the message - we can set that in the ini
+            m_log.InfoFormat("[ExampleModule]: NewClient {0} {1} @ {2}", 
+                             agent_type, client.Name, client.Scene.RegionInfo.RegionName);
+        }
+        
+        void HandleOnMakeRootAgent (ScenePresence obj)
+        {
+            ScenePresence sp = (ScenePresence)obj;
+            OpenSim.Framework.IClientAPI client =  sp.ControllingClient;
+
             // Use our convenience method below to get the client name, then send them a modal alert message
             // we use our m_ExampleConfig for the message - we can set that in the ini
             client.SendAgentAlertMessage(String.Format("Hello! {0}! {1}", GetClientName(client), m_ExampleMessage), true);
 
-            m_log.InfoFormat("[ExampleModule]: NewClient {0} @ {1}", client.Name, client.RemoteEndPoint.ToString());
+            m_log.InfoFormat("[ExampleModule]: RootAgent {0} @ {1}", client.Name, client.RemoteEndPoint.ToString());
+            
         }
 
         // This is needed if we want to issue console commands

@@ -1,0 +1,4 @@
+*.csproj
+*.csproj.user
+*.build
+*.swp
