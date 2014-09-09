@@ -5,7 +5,7 @@
    We make the path from our base directory to the directory our *cs files
    are placed in. 
 -->
-<Project frameworkVersion="v3_5" name="ExampleModule" path="addon-modules/ExampleRegionModule/Src" type="Library">
+<Project frameworkVersion="v4_0" name="ExampleModule" path="addon-modules/ExampleRegionModule/Src" type="Library">
      <!-- ****[ NOTE ]****
 
         Our configuration definitions.
