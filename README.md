@@ -16,7 +16,8 @@ sequence numbers to show the order of calls during module loading.
 The prebuild.xml file is important too and includes commenting to guide development
 of new modules.
 
-If you encounter issues with the examlpe module, please file an issue report here.
+If you encounter issues with the example module, please file an issue report here then
+look me up in #opensim-dev on freenode.net.
 
 Thanks for using it,
 BlueWall
