@@ -39,7 +39,7 @@ using OpenSim.Region.CoreModules.Framework.InterfaceCommander;
 
 // Our plugin loader needs the information about our module
 [assembly: Addin("ExampleModule", "0.1")]
-[assembly: AddinDependency("OpenSim", "0.5")]
+[assembly: AddinDependency("OpenSim.Region.Framework", OpenSim.VersionInfo.VersionNumber)]
 
 namespace ModExampleModule
 {
